@@ -18,7 +18,7 @@ export class InMemoryDataService {
       { id: 19, name: 'Magma' },
       { id: 20, name: 'Tornado' },
     ];
-    return heroes;
+    return {heroes};
   }
 
   genId(heroes: Hero[]): number {
