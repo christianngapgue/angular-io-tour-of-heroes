@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { Hero } from './hero';
 import { MessageService } from './message.service';
 import { HEROES } from './mock-heroes';
@@ -13,7 +13,17 @@ export class HeroService {
 
   getHeroes(): Observable<Hero[]> {
     this.log(`fetched heroes`);
-    return this.http.get<Hero[]>(this.heroesUrl);
+    return this.http
+      .get<Hero[]>(this.heroesUrl)
+      .pipe(catchError(this.handleError<Hero[]>('getHeroes', [])));
+  }
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      this.log(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
   }
 
   getHero(id: number): Observable<Hero> {
